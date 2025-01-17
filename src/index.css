@@ -3,13 +3,16 @@
 }
 
 body {
-  display: flex;
   margin: 0;
   padding: 20px;
   font-family: "Hanken Grotesk", Arial, sans-serif;
   height: 100vh;
   color: #D9D9D9;
   background-color: #262626;
+}
+
+.main-container {
+  display: flex;
   align-items: center;
   flex-direction: column;
   gap: 30px;
@@ -48,7 +51,7 @@ header {
   height: 79px;
   padding: 6px 0px 6px 0px;
   gap: 6px;
-  border-radius: 4px 0px 0px 0px;
+  border-radius: 4px;
   border: 1px 0px 0px 0px;
   opacity: 0px;
   background-color: #7A5EA7;
@@ -87,6 +90,7 @@ margin: 0;
   height: 51.5px;
   gap: 1.5px;
   justify-content: center;
+  border-bottom: 36px;
 }
 
 .language-div > span {
@@ -104,7 +108,7 @@ margin: 0;
   padding: 5px;
 }
 
-.word-box {
+.word-box, .word-box-close {
   width: 40px;
   height: 40px;
   padding: 6px 0px 0px 0px;
@@ -118,9 +122,91 @@ margin: 0;
   line-height: 1.465rem;
   text-underline-position: from-font;
   text-decoration-skip-ink: none;
-
 }
+
+.word-box-close {
+  background-color: #323232;
+  color: #323232;
+}
+
 .word-container {
   display: flex;
   gap:2px;
+  border-bottom: 36px;
+}
+
+.keyboard-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 480px;
+  height: 164px;
+  gap: 12px;
+}
+
+.key-button-box, .key-button-box-correct, .key-button-box-incorrect {
+  width: 40px;
+  height: 40px;
+  padding: 6px;
+  gap: 6px;
+  border-radius: 4px;
+  border: 1px solid #D9D9D9;
+  opacity: 0px;
+  background-color: #FCBA29;
+  color: #1E1E1E;
+  font-family: Hanken Grotesk;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.303rem;
+  text-align: center;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  cursor: pointer;
+}
+
+.key-button-box-correct {
+  background-color: #10A95B;
+}
+
+.key-button-box-incorrect {
+  background-color: #EC5D49;
+}
+
+.base-button {
+  width: 228px;
+  height: 40px;
+  padding: 6px 12px 6px 12px;
+  gap: 6px;
+  border-radius: 4px;
+  border: 1px solid #F9F4DA;
+  font-family: Hanken Grotesk;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.303rem;
+  text-align: center;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  background-color: #11B5E5;
+  cursor: pointer;
+}
+
+.key-button-box:focus {
+  outline: 2px solid #4A90E2; 
+  outline-offset: 6px;       
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.75); /* Optional glow effect */
+}
+
+
+/* Dimmed overlay with skull on "lost" languages */
+.word-box.lost::before {
+  content: "💀";
+  position: absolute;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  height: 100%; 
+  width: 100%; 
+  font-size: 0.85rem;
+  top: 0; left: 0;
+  background-color: rgbal(0, 0, 0, 0.7) 
 }
