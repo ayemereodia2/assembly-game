@@ -106,9 +106,10 @@ margin: 0;
 .language-div  {
   border-radius: 3px;
   padding: 5px;
+  position: relative;
 }
 
-.word-box, .word-box-close {
+.word-box {
   width: 40px;
   height: 40px;
   padding: 6px 0px 0px 0px;
@@ -124,10 +125,6 @@ margin: 0;
   text-decoration-skip-ink: none;
 }
 
-.word-box-close {
-  background-color: #323232;
-  color: #323232;
-}
 
 .word-container {
   display: flex;
@@ -198,7 +195,7 @@ margin: 0;
 
 
 /* Dimmed overlay with skull on "lost" languages */
-.word-box.lost::before {
+.language-div.lost::before {
   content: "💀";
   position: absolute;
   display: flex;
@@ -208,5 +205,5 @@ margin: 0;
   width: 100%; 
   font-size: 0.85rem;
   top: 0; left: 0;
-  background-color: rgbal(0, 0, 0, 0.7) 
+  background-color: rgba(0, 0, 0, 0.7) 
 }

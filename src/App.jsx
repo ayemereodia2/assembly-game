@@ -2,44 +2,79 @@ import { useState, useRef } from "react";
 import { languages } from "../languages";
 
 export default function App() {
-  const mainWords = "rteact";
   const alphabets = "abcdefghijklmnopqrstuvwxyz";
   const [guesses, setGuesses] = useState([]);
   const [isCorrect, setIsCorrect] = useState(Array(26).fill(false));
   const wrongGuessCount = useRef(0);
-  const [keyboardStates, setKeyboardStates] = useState(Array(26).fill({
-    KEY_STATE: "key-button-box"
-  }));
+  const [keyboardStates, setKeyboardStates] = useState(
+    Array(26).fill({
+      KEY_STATE: "key-button-box",
+    })
+  );
 
+  const [languageState, setLanguageState] = useState(
+    languages.map((eachLanguage) => ({ ...eachLanguage, isGone: false }))
+  );
 
+  const currentPos = useRef(0);
+  const currentWordTemp = "react".toUpperCase().split("");
+  const remainderText = useRef("react");
 
-  let currentPos = useRef(0);
-  let remainderText = useRef(mainWords);
-  const [currentWords, setCurrentWords] = useState(Array(mainWords.length).fill(" "))
-  
+  const [currentWords, setCurrentWords] = useState(
+    Array(currentWordTemp.length).fill(" ")
+  );
+ 
+
   const keyPressed = (char, id) => {
-    setGuesses(prev =>  (prev.includes(char) ? prev : [...prev, char]));
-    if(mainWords.split("").includes(char)){
-     
-       const index = remainderText.current.indexOf(char);
-       console.log(index);
-      remainderText.current = remainderText.current.replace(char, " ")
+    setGuesses((prev) => (prev.includes(char) ? prev : [...prev, char]));
+    
+    if (currentWordTemp.includes(char.toUpperCase())) {
+      remainderText.current = remainderText.current.toUpperCase();
+      const arrayValue = remainderText.current
+      const index = arrayValue.indexOf(char.toUpperCase());
+      arrayValue.replace(char.toUpperCase(), " ");
+    
+      remainderText.current = arrayValue;
 
       setCurrentWords((oldChar) => {
         const updatedChars = [...oldChar]; // Create a copy of the old array
-        updatedChars[index] = char;       // Update the specific index
-        return updatedChars;              // Return the updated array
+        
+        updatedChars[index] = char.toUpperCase(); // Update the specific index
+        
+        return updatedChars; // Return the updated array
       });
 
-      setIsCorrect(prev => [prev[id] = true, ...prev]);
-      setKeyboardStates(prevKeyState => [...prevKeyState, prevKeyState[id] = {KEY_STATE:  "key-button-box-correct"}])
-    }else {
-      wrongGuessCount.current = wrongGuessCount.current + 1;
-      setKeyboardStates(prevKeyState => [...prevKeyState, prevKeyState[id] = {KEY_STATE: "key-button-box-incorrect"}])
-      console.log(wrongGuessCount.current);
-    }
-  }
+      setIsCorrect((prev) => [(prev[id] = true), ...prev]);
+      setKeyboardStates((prevKeyState) => [
+        ...prevKeyState,
+        (prevKeyState[id] = { KEY_STATE: "key-button-box-correct" }),
+      ]);
+
+
+    } else {
+      currentPos.current  = currentPos.current + 1;
+
+      setKeyboardStates((prevKeyState) => [
+        ...prevKeyState,
+        (prevKeyState[id] = { KEY_STATE: "key-button-box-incorrect" }),
+      ]);
+     
+        setLanguageState((prevLanguageArray) => {
+          const oldArray = [...prevLanguageArray]
+          oldArray[currentPos.current - 1] = {...oldArray[currentPos.current - 1], isGone: true}
+          return oldArray
+        })
   
+    }
+  };
+
+  function startNewGame() {
+    currentPos.current = 0
+    setLanguageState(prev => (prev.map(item => ({...item, isGone:false}))))
+    setKeyboardStates(prev => (Array(26).fill({KEY_STATE: "key-button-box"})))
+    setCurrentWords(prev => (Array(currentWordTemp.length).fill(" ")))
+  }
+
   function HeaderView() {
     return (
       <header>
@@ -57,28 +92,35 @@ export default function App() {
   }
 
   const wordElement = currentWords.map((character, index) => (
-      <span key={index} className={"word-box"}>{character.toUpperCase()}</span>
-  ))
+    <span key={index} className={"word-box"}>
+      {character.toUpperCase()}
+    </span>
+  ));
+
 
   const keyBoardElements = alphabets.split("").map((char, id) => (
-    <button onClick={() => keyPressed(char, id)} key={char} className={keyboardStates[id].KEY_STATE}>{char.toUpperCase()}</button>
-  ))
+    <button
+      onClick={() => keyPressed(char, id)}
+      key={char}
+      className={ keyboardStates[id].KEY_STATE }
+    >
+      {char.toUpperCase()}
+    </button>
+  ));
 
   function WordView() {
-    return (
-      <section className="word-container">
-        {wordElement}
-      </section>
-    )
+    return <section className="word-container">{wordElement}</section>;
   }
 
-  const languageElements = languages.map((language) => (
-    <div key={language.name}
+  const languageElements = languageState.map((language) => (
+    <div
+      key={language.name}
       style={{
         backgroundColor: language.backgroundColor,
         color: language.color,
       }}
-      className="language-div"
+      className={`language-div ${language.isGone ? "lost" : ""
+      }`}
     >
       <span>{language.name}</span>
     </div>
@@ -90,12 +132,8 @@ export default function App() {
     );
   }
 
-  function KeyboardView(){
-    return (
-      <section className="keyboard-container">
-        {keyBoardElements}
-      </section>
-    )
+  function KeyboardView() {
+    return <section className="keyboard-container">{keyBoardElements}</section>;
   }
 
   return (
@@ -103,8 +141,8 @@ export default function App() {
       <HeaderView />
       <LanguageViews />
       <WordView />
-      <KeyboardView/>
-      <button className="base-button">New Game</button>
+      <KeyboardView />
+      <button onClick={startNewGame} className="base-button">New Game</button>
     </div>
   );
 }
